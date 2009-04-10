@@ -252,6 +252,27 @@ module MailerTags
     tag.expand if name && mail.data[name] && (eq.blank? || eq == mail.data[name])
   end
   
+  desc %{
+    Renders the contents of the directory configuration as either a single or multi
+    select.
+  }
+  tag 'mailer:directory' do |tag|
+    config = mailer_config(tag.locals.page) # get and parse the mailer part.
+    result = ""
+    if config   #the config may be nil
+      directory = config[:directory]
+      if tag.attr['multiple'] == "false" || tag.attr['multiple'] == "" || !tag.attr['multiple']
+        tag.attr.delete('multiple')
+      else
+        tag.attr['multiple'] = "multiple"
+      end
+      result << %(<select #{mailer_attrs(tag)}>)
+      directory.each_index do |dir, idx| 
+        result << %(<option value="#{idx}">#{dir[:name]}</option>)
+      end
+      result << %(</select>)
+  end
+   
   def format_mailer_data(element, name)
     data = element[name]
     if Array === data
@@ -304,4 +325,14 @@ module MailerTags
   def raise_error_if_name_missing(tag_name, tag_attr)
     raise "`#{tag_name}' tag requires a `name' attribute" if tag_attr['name'].blank?
   end
+  
+  def mailer_config(page)
+    until page.part(:mailer) or (not page.parent)
+      page = page.parent
+    end
+    string = page.render_part(:mailer)
+    (string.empty? ? {} : YAML::load(string).symbolize_keys)
+  end
+
+  
 end
