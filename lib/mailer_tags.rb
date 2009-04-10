@@ -271,6 +271,8 @@ module MailerTags
         result << %(<option value="#{idx}">#{dir[:name]}</option>)
       end
       result << %(</select>)
+    end
+    result
   end
    
   def format_mailer_data(element, name)
