@@ -52,7 +52,11 @@ class Mail
   end
 
   def recipients
-    config[:recipients] || data[config[:recipients_field]].split(/,/).collect{|e| e.strip}
+    unless config[:directory]
+      config[:recipients] || data[config[:recipients_field]].split(/,/).collect{|e| e.strip}
+    else
+      data[config[:recipients_field]].split(/,/).collect{|e| config[:directory][e.strip]}
+    end      
   end
 
   def reply_to
