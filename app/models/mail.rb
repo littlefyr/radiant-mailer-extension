@@ -55,7 +55,7 @@ class Mail
     unless config[:directory]
       config[:recipients] || data[config[:recipients_field]].split(/,/).collect{|e| e.strip}
     else
-      data[config[:recipients_field]].split(/,/).collect{|e| config[:directory][e.strip][:email]}
+      data[config[:recipients_field]].split(/,/).collect{|e| config[:directory][e.strip]["email"]}
     end      
   end
 
