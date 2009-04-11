@@ -268,7 +268,7 @@ module MailerTags
       end
       result << %(<select #{mailer_attrs(tag)}>)
       directory.each_with_index do |dir, idx| 
-        result << %(<option value="#{idx}">#{dir["name"]}</option>)
+        result << %(<option value="#{idx}">#{dir.inspect}</option>)
       end
       result << %(</select>)
     end
