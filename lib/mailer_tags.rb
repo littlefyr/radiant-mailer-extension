@@ -267,7 +267,7 @@ module MailerTags
         tag.attr['multiple'] = "multiple"
       end
       result << %(<select #{mailer_attrs(tag)}>)
-      directory.each_index do |dir, idx| 
+      directory.each_with_index do |dir, idx| 
         result << %(<option value="#{idx}">#{dir[:name]}</option>)
       end
       result << %(</select>)
