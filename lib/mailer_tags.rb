@@ -276,9 +276,10 @@ module MailerTags
     Access the directory in the mailer config directory. 
   }
   tag "directory" do |tag|
-    if Mail.valid_config?(config) 
-      if config[:directory]
-        tag.locals.directory = config[:directory]
+    if Mail.valid_config?(config)
+      directory = config[:directory]
+      if directory
+        tag.locals.directory = directory
         tag.expand
       else
         "No directory found"
