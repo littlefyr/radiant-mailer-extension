@@ -293,9 +293,9 @@ module MailerTags
   }
   tag "directory:each" do |tag|
     result = ""    
-    tag.locals.directory.each_with_index do |item, idx|
+    tag.locals.directory.each_index do |idx|
       tag.locals.directory_index = idx
-      tag.locals.directory_item = item
+      tag.locals.directory_item = tag.locals.directory[idx]
       result << tag.expand
     end
     result    
