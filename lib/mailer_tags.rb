@@ -296,8 +296,8 @@ module MailerTags
     tag.locals.directory.each_index do |idx|
       tag.locals.directory_index = idx
       tag.locals.directory_item = tag.locals.directory[idx]
-      result << tag.locals.directory[idx]
-      result << "#####################<br />"
+      result << tag.locals.directory[idx].inspect
+      result << "<br /><hr />"
 #      result << tag.expand
     end
     
