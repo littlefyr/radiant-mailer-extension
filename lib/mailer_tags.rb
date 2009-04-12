@@ -277,13 +277,13 @@ module MailerTags
   }
   tag "directory" do |tag|
     if Mail.valid_config?(config)
-      directory = config[:directory]
-      if directory
-        tag.locals.directory = directory
-        tag.expand
-      else
-        "No directory found"
-      end
+      config.inspect
+#      if directory
+#        tag.locals.directory = directory
+#        tag.expand
+#      else
+#        "No directory found"
+#      end
     else
       "Mailer config is not valid (see Mailer.valid_config?)"
     end  
