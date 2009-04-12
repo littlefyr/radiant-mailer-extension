@@ -318,9 +318,10 @@ module MailerTags
     desc %{
       Renders a #{type} input tag for the current directory item. The 'name' attribute is required.}
     tag "directory:each:current_#{type}" do |tag|
-      raise_error_if_name_missing "mailer:#{type}", tag.attr
-      value = (prior_value(tag) || tag.attr['value'])
-      result = [%(<input type="#{type}" value="#{tag.locals.directory_index}" #{mailer_attrs(tag)} />)]
+      raise_error_if_name_missing "directory:each:current_#{type}", tag.attr
+      value = (prior_value(tag) || tag.locals.directory_index)
+      index = "current#{tag.locals.directory_index}"
+      result = [%(<input type="#{type}" value="#{value}" #{mailer_attrs(tag, {'id' => index})} />)]
       add_required(result, tag)
     end
   end
