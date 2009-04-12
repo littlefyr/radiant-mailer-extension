@@ -328,7 +328,7 @@ module MailerTags
     to retrieve.
   }
   tag "directory:each:value" do |tag|
-    tag.locals.directory_item == tag.locals.directory    
+    tag.locals.directory_item == tag.locals.directory[tag.locals.directory_index]
 #    tag.locals.directory_item[tag.attr[:name]]
   end
 
