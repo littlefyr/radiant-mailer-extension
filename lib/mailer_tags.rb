@@ -296,9 +296,7 @@ module MailerTags
     tag.locals.directory.each_index do |idx|
       tag.locals.directory_index = idx
       tag.locals.directory_item = tag.locals.directory[idx]
-      result << tag.locals.directory[idx].inspect
-      result << "<br /><hr />"
-#      result << tag.expand
+      result << tag.expand
     end
     
     result    
@@ -331,6 +329,7 @@ module MailerTags
     to retrieve.
   }
   tag "directory:each:value" do |tag|
+    
     tag.locals.directory_item.inspect 
 #    tag.locals.directory_item[tag.attr[:name]]
   end
