@@ -330,8 +330,8 @@ module MailerTags
   }
   tag "directory:each:value" do |tag|
     
-    tag.locals.directory_item.inspect 
-#    tag.locals.directory_item[tag.attr[:name]]
+#    tag.locals.directory_item.inspect 
+    tag.locals.directory_item[tag.attr[:name]]
   end
 
    
