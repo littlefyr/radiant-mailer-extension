@@ -368,7 +368,7 @@ module MailerTags
 
   def mailer_attrs(tag, extras={})
     attrs = {
-      'id' => tag.attr['name'],
+      'id' => tag.attr['name'].to_s ,
       'class' => nil,
       'size' => nil}.merge(extras)
     result = attrs.collect do |k,v|
