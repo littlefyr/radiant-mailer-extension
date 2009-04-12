@@ -258,7 +258,7 @@ module MailerTags
   }
   tag 'mailer:directory_select' do |tag|
     result = ""
-    directory = config[:directory]
+    directory = config["directory"]
     if tag.attr['multiple'] == "false" || tag.attr['multiple'] == "" || !tag.attr['multiple']
       tag.attr.delete('multiple')
     else
@@ -277,13 +277,13 @@ module MailerTags
   }
   tag "directory" do |tag|
     if Mail.valid_config?(config)
-      config.inspect
-#      if directory
-#        tag.locals.directory = directory
-#        tag.expand
-#      else
-#        "No directory found"
-#      end
+      directory = config["directory"]
+      if directory
+        tag.locals.directory = directory
+        tag.expand
+      else
+        "No directory found"
+      end
     else
       "Mailer config is not valid (see Mailer.valid_config?)"
     end  
