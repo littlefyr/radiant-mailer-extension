@@ -375,7 +375,7 @@ module MailerTags
       v = (tag.attr[k] || v)
       next if v.blank?
       if k == 'id' && tag.locals.directory_index
-        v << "#{tag.locals.directory_index}"
+        v = "#{v}_#{tag.locals.directory_index}"
       end
       %(#{k}="#{v}")
     end.reject{|e| e.blank?}
