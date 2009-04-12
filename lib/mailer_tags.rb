@@ -256,24 +256,80 @@ module MailerTags
     Renders the contents of the directory configuration as either a single or multi
     select.
   }
-  tag 'mailer:directory' do |tag|
-    config = mailer_config(tag.locals.page) # get and parse the mailer part.
+  tag 'mailer:directory_select' do |tag|
     result = ""
-    if config   #the config may be nil
-      directory = config[:directory]
-      if tag.attr['multiple'] == "false" || tag.attr['multiple'] == "" || !tag.attr['multiple']
-        tag.attr.delete('multiple')
-      else
-        tag.attr['multiple'] = "multiple"
-      end
-      result << %(<select #{mailer_attrs(tag)}>)
-      directory.each_with_index do |dir, idx| 
-        result << %(<option value="#{idx}">#{dir["name"]}</option>)
-      end
-      result << %(</select>)
+    directory = config[:directory]
+    if tag.attr['multiple'] == "false" || tag.attr['multiple'] == "" || !tag.attr['multiple']
+      tag.attr.delete('multiple')
+    else
+      tag.attr['multiple'] = "multiple"
     end
+    result << %(<select #{mailer_attrs(tag)}>)
+    directory.each_with_index do |dir, idx| 
+      result << %(<option value="#{idx}">#{dir["name"]}</option>)
+    end
+    result << %(</select>)
     result
   end
+  
+  desc %{
+    Access the directory in the mailer config directory. 
+  }
+  tag "directory" do |tag|
+    if Mail.valid_config?(config) 
+      if config[:directory]
+        tag.locals.directory = config[:directory]
+        tag.expand
+      else
+        "No directory found"
+      end
+    else
+      "Mailer config is not valid (see Mailer.valid_config?)"
+    end  
+  end
+  desc %{
+    Loop through each entry in the directory 
+  }
+  tag "directory:each" do |tag|
+    result = ""    
+    tag.locals.directory.each_with_index do |item, idx|
+      tag.locals.directory_index = idx
+      tag.locals.directory_item = item
+      result << tag.expand
+    end
+    result    
+  end
+  desc %{
+    Returns the index for the current directory item
+  }
+  tag "directory:each:current" do |tag|
+    tag.locals.directory_index
+  end
+  desc %{
+    Creates an option element for the current directory item
+  }
+  tag "directory:each:current_option" do |tag|
+    %(<option value="#{tag.locals.directory_index}"}>#{tag.expand}</option>)
+  end
+  
+  %w(checkbox radio hidden).each do |type|
+    desc %{
+      Renders a #{type} input tag for the current directory item. The 'name' attribute is required.}
+    tag "directory:each:current_#{type}" do |tag|
+      raise_error_if_name_missing "mailer:#{type}", tag.attr
+      value = (prior_value(tag) || tag.attr['value'])
+      result = [%(<input type="#{type}" value="#{tag.locals.directory_index}" #{mailer_attrs(tag)} />)]
+      add_required(result, tag)
+    end
+  end
+  desc %{
+    Retrieves some value out of the directory configuration. name attribute defines the property
+    to retrieve.
+  }
+  tag "directory:each:value" do |tag|
+    tag.locals.directory_item[tag.attr[:name]]
+  end
+
    
   def format_mailer_data(element, name)
     data = element[name]
@@ -313,6 +369,9 @@ module MailerTags
     result = attrs.collect do |k,v|
       v = (tag.attr[k] || v)
       next if v.blank?
+      if k == 'id' && tag.locals.directory_index
+        v << "_tag.locals.directory_index"
+      end
       %(#{k}="#{v}")
     end.reject{|e| e.blank?}
     result << %(name="mailer[#{tag.attr['name']}]") unless tag.attr['name'].blank?
@@ -328,13 +387,5 @@ module MailerTags
     raise "`#{tag_name}' tag requires a `name' attribute" if tag_attr['name'].blank?
   end
   
-  def mailer_config(page)
-    until page.part(:mailer) or (not page.parent)
-      page = page.parent
-    end
-    string = page.render_part(:mailer)
-    (string.empty? ? {} : YAML::load(string).symbolize_keys)
-  end
-
   
 end
