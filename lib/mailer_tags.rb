@@ -320,8 +320,7 @@ module MailerTags
     tag "directory:each:current_#{type}" do |tag|
       raise_error_if_name_missing "directory:each:current_#{type}", tag.attr
       value = (prior_value(tag) || tag.locals.directory_index)
-      index = "current#{tag.locals.directory_index}"
-      result = [%(<input type="#{type}" value="#{value}" #{mailer_attrs(tag, {'id' => index})} />)]
+      result = [%(<input type="#{type}" value="#{value}" #{mailer_attrs(tag, {'id' => "current"})} />)]
       add_required(result, tag)
     end
   end
